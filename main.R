@@ -1,5 +1,8 @@
 # This file contains a very straight-forward example using the Fish Market. 
 # Probably the best option if we want to get the project done quick.
+
+# Dataset is from https://www.kaggle.com/datasets/aungpyaeap/fish-market
+
 # Link to Google Docs I started:
 # https://docs.google.com/document/d/1f98D2EjpBOp1ExCzr1Fxuy8Vmk6Tbwh0-8Ihsb91nc0/edit?usp=sharing
 # If we want to be fancy we can use this latex writer
@@ -47,7 +50,7 @@ k = 6
 qt(1 - 0.05/2, n - k)
 
 # Reviewing page 88 in the book regarding T tests and MLR models it appears that 
-# Height and Width contribute the most to his model relative to the other regressors.
+# Height and Width contribute the most to this model relative to the other regressors.
 
 model.test <- lm(formula = Weight ~ Height + Width, data = fishData)
 summary(model.test)
