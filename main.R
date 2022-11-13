@@ -9,15 +9,15 @@
 # https://www.overleaf.com/6297936779xqkywtccqbrc
 
 # Read in Data. Using this fish market as a placeholder.
-fishData = read.csv("./Fish.csv")[2:7]
+fishData = read.csv("./Fish.csv")
 # 1. Draw graphs to interpret the property of the data. What do you find?
 
 # Species name breaks pairs, so I ignored the first column when setting up our data.
-pairs(fishData)
+pairs(fishData[2:7])
 
 # 2. Select and fit the model. Summarize model results
 
-model <- lm(formula = Weight ~ ., data = fishData)
+model <- lm(formula = Weight ~ Length1 + Length2 + Length3 + Height + Width, data = fishData)
 summary(model)
 
 # 3. Analyze the contribution of each predictor
@@ -50,10 +50,8 @@ k = 6
 qt(1 - 0.05/2, n - k)
 
 # Reviewing page 88 in the book regarding T tests and MLR models it appears that 
-# Height and Width contribute the most to this model relative to the other regressors.
+# Height contribute the most to this model relative to the other regressors.
 
-model.test <- lm(formula = Weight ~ Height + Width, data = fishData)
-summary(model.test)
 
 # Significance of Regression
 # This should indicate that at least one of our parameters is linearly significantly related to y.
@@ -64,5 +62,11 @@ alpha = 0.05
 qf(1 - alpha, 5, 153)
 
 # 4. Check the model adequacy
+# Looks like a not good model
+plot(x = fitted(model), y=rstandard(model), panel.last = abline(h = 0, lty = 2))
+
+qqnorm(residuals(model), main = "", datax = TRUE)
+qqline(residuals(model), datax = TRUE)
+
 
 # 5. Summarize the analysis results
