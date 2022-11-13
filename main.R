@@ -10,6 +10,10 @@
 
 # Read in Data. Using this fish market as a placeholder.
 fishData = read.csv("./Fish.csv")
+
+# There is a couple instances of fish with 0 weight
+fishData = subset(fishData, Weight > 0)
+
 # 1. Draw graphs to interpret the property of the data. What do you find?
 
 # Species name breaks pairs, so I ignored the first column when setting up our data.
