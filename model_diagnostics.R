@@ -8,20 +8,28 @@ pairs(fishData[2:7])
 
 # Weight doesn't look linear compared to other values. We can check our distribution of Weight.
 hist(fishData$Weight, col='steelblue', main='Original')
-hist(log10(Weight), col='coral', main='Log Transformation')
+hist(log10(fishData$Weight), col='coral', main='Log Transformation')
 
 # Log transformation can make our distribution a bit better and therefore better fulfill the assumption
 # that our data is normally distributed. We could also work out a more complex model.
 
 #This is assigned to fishData now, so we can use weight_log as our y.
-fishData$Weight_log = log10(Weight)
+fishData$Weight_log = log10(fishData$Weight)
 
 # New pairs plot with Weight_log
 pairs(fishData[3:8])
-attach(fishData)
+
+# From the pairs plot, we can see that the regressors are not independent, have 
+# look at collinearity and correlation between exp. variables
+round(cor(fishData[,c(3:8)]), 3)
+
+# All correlation coeff. > 0.5, problematic...
+
+################################################################################
 
 # Initial model to test regressors
-model <- lm(formula = Weight_log ~ Length1 + Length2 + Length3 + Height + Width, data = fishData)
+attach(fishData)
+model <- lm(formula = Weight_log ~ Length1 + Length2 + Length3 + Height + Width)
 summary(model)
 
 # Use tobs to test individual contributions
@@ -53,4 +61,5 @@ summary(model3)
 plot(x = fitted(model3), y=rstandard(model3), panel.last = abline(h = 0, lty = 2))
 
 # model3 has = better adj. R-sqr value and residual plot looks better than other 2 models, 
-# next: try to add interaction terms ince the residuals plot still does not look ideal (residuals are still clustered a bit)
+# next: try to add interaction terms ince the residuals plot still does not look ideal 
+# (residuals are still clustered a bit)
