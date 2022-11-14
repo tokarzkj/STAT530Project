@@ -14,41 +14,35 @@ fishData = read.csv("./Fish.csv")
 # There is a couple instances of fish with 0 weight
 fishData = subset(fishData, Weight > 0)
 
+###################################################################################################################
 # 1. Draw graphs to interpret the property of the data. What do you find?
+###################################################################################################################
 
 # Species name breaks pairs, so I ignored the first column when setting up our data.
 pairs(fishData[2:7])
 
-# 2. Select and fit the model. Summarize model results
+# Weight doesn't look linear compared to other values. We can check our distribution of Weight.
+hist(fishData$Weight, col='steelblue', main='Original')
+hist(log10(fishData$Weight), col='coral', main='Log Transformation')
 
-model <- lm(formula = Weight ~ Length1 + Length2 + Length3 + Height + Width, data = fishData)
+# Log transformation can make our distribution a bit better and therefore better fulfill the assumption
+# that our data is normally distributed. We could also work out a more complex model.
+
+#This is assigned to fishData now, so we can use weight_log as our y.
+fishData$Weight_log = log10(fishData$Weight)
+
+###################################################################################################################
+# 2. Select and fit the model. Summarize model results
+###################################################################################################################
+model <- lm(formula = Weight_log ~ Length1 + Length2 + Length3 + Height + Width, data = fishData)
 summary(model)
 
+###################################################################################################################
 # 3. Analyze the contribution of each predictor
+###################################################################################################################
 
 # Use tobs to test individual contributions
-
-# b1 = 0 - Length1
-b1_tobs = (62.355 - 0)/40.209
-
-# b2 = 0 - Length2
-b2_tobs = (-6.527 - 0)/41.759
-
-# b3 = 0 - Length3
-b3_tobs = (-29.026 - 0)/17.353
-
-# b4 = 0 - Height
-b4_tobs = (28.297 - 0)/8.729
-
-# b5 = 0 - Width
-b5_tobs = (22.473 - 0)/20.372
-
-print(b1_tobs)
-print(b2_tobs)
-print(b3_tobs)
-print(b4_tobs)
-print(b5_tobs)
-
+# Each tobs is listed in the summary, so we can just calculate the t alpha/2
 n = nrow(fishData)
 k = 6
 qt(1 - 0.05/2, n - k)
@@ -59,18 +53,23 @@ qt(1 - 0.05/2, n - k)
 
 # Significance of Regression
 # This should indicate that at least one of our parameters is linearly significantly related to y.
-model2 <- lm(formula = Weight ~ 1., data = fishData)
+model2 <- lm(formula = Weight_log ~ 1., data = fishData)
 anova(model2, model)
 
 alpha = 0.05
 qf(1 - alpha, 5, 153)
 
+###################################################################################################################
 # 4. Check the model adequacy
+###################################################################################################################
+
+
 # Looks like a not good model
 plot(x = fitted(model), y=rstandard(model), panel.last = abline(h = 0, lty = 2))
 
 qqnorm(residuals(model), main = "", datax = TRUE)
 qqline(residuals(model), datax = TRUE)
 
-
+###################################################################################################################
 # 5. Summarize the analysis results
+###################################################################################################################
