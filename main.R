@@ -18,18 +18,19 @@ fishData = subset(fishData, Weight > 0)
 # 1. Draw graphs to interpret the property of the data. What do you find?
 ###################################################################################################################
 
+# Log transformation can make our distribution a bit better and therefore better fulfill the assumption
+# that our data is normally distributed. We could also work out a more complex model.
+
+#This is assigned to fishData now, so we can use weight_log as our y.
+fishData$Weight_log = sqrt(fishData$Weight)
+
+
 # Species name breaks pairs, so I ignored the first column when setting up our data.
 pairs(fishData[2:7])
 
 # Weight doesn't look linear compared to other variables.
 hist(fishData$Weight, col='steelblue', main='Original')
-hist(log10(fishData$Weight), col='coral', main='Log Transformation')
-
-# Log transformation can make our distribution a bit better and therefore better fulfill the assumption
-# that our data is normally distributed. We could also work out a more complex model.
-
-#This is assigned to fishData now, so we can use weight_log as our y.
-fishData$Weight_log = log10(fishData$Weight)
+hist(fishData$Weight_log, col='coral', main='Log Transformation')
 
 ###################################################################################################################
 # 2. Select and fit the model. Summarize model results
