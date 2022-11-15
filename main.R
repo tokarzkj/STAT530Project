@@ -21,7 +21,7 @@ fishData = subset(fishData, Weight > 0)
 # Species name breaks pairs, so I ignored the first column when setting up our data.
 pairs(fishData[2:7])
 
-# Weight doesn't look linear compared to other values. We can check our distribution of Weight.
+# Weight doesn't look linear compared to other variables.
 hist(fishData$Weight, col='steelblue', main='Original')
 hist(log10(fishData$Weight), col='coral', main='Log Transformation')
 
@@ -36,6 +36,7 @@ fishData$Weight_log = log10(fishData$Weight)
 ###################################################################################################################
 model <- lm(formula = Weight_log ~ Length1 + Length2 + Length3 + Height + Width, data = fishData)
 summary(model)
+# Both R^2 and adjusted R^2 decreased slightly.
 
 ###################################################################################################################
 # 3. Analyze the contribution of each predictor
@@ -47,8 +48,7 @@ n = nrow(fishData)
 k = 6
 qt(1 - 0.05/2, n - k)
 
-# Reviewing page 88 in the book regarding T tests and MLR models it appears that 
-# Height contribute the most to this model relative to the other regressors.
+# Page 88 has relevant details about T-tests in multivariable model.
 
 
 # Significance of Regression
@@ -73,3 +73,23 @@ qqline(residuals(model), datax = TRUE)
 ###################################################################################################################
 # 5. Summarize the analysis results
 ###################################################################################################################
+
+
+
+# I am pretending we are sticking with the current model and will focus on using the multicollinearity topic.
+# Totally cool with throwing this model away in favor of the second order one.
+round(cor(fishData[, c(2:8)]), 3)
+
+# Length 3 (I think that is the cross measurement) is the strongest. Based on class, we could keep that and toss Length 1 & 2
+model.reduced = lm(formula = Weight_log ~ Length3 + Height + Width, data = fishData)
+summary(model.reduced)
+
+n = nrow(fishData)
+k = 6
+qt(1 - 0.05/2, n - k)
+
+# None of these look much better which is probably because a linear model on non-linear relationship will never get better
+plot(x = fitted(model.reduced), y=rstandard(model.reduced), panel.last = abline(h = 0, lty = 2))
+
+qqnorm(residuals(model.reduced), main = "", datax = TRUE)
+qqline(residuals(model.reduced), datax = TRUE)
