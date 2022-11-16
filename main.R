@@ -10,34 +10,30 @@
 
 # Read in Data. Using this fish market as a placeholder.
 fishData = read.csv("./Fish.csv")
-
+attach(fishData)
 # There is a couple instances of fish with 0 weight
-fishData = subset(fishData, Weight > 0)
+#fishData = subset(fishData, Weight > 0)
 
 ###################################################################################################################
 # 1. Draw graphs to interpret the property of the data. What do you find?
 ###################################################################################################################
 
-# Log transformation can make our distribution a bit better and therefore better fulfill the assumption
-# that our data is normally distributed. We could also work out a more complex model.
-
-#This is assigned to fishData now, so we can use weight_log as our y.
-fishData$Weight_log = sqrt(fishData$Weight)
-
-
 # Species name breaks pairs, so I ignored the first column when setting up our data.
 pairs(fishData[2:7])
 
-# Weight doesn't look linear compared to other variables.
-hist(fishData$Weight, col='steelblue', main='Original')
-hist(fishData$Weight_log, col='coral', main='Log Transformation')
 
 ###################################################################################################################
 # 2. Select and fit the model. Summarize model results
 ###################################################################################################################
-model <- lm(formula = Weight_log ~ Length1 + Length2 + Length3 + Height + Width, data = fishData)
+l1sq <- Length1^2
+l2sq <- Length2^2
+l3sq <- Length3^3
+hsq <- Height^2
+wsq <- Width^2
+
+
+model <- lm(formula = Weight ~ Length1 + Length2 + Length3 + Height + Width + l1sq + l2sq + l3sq + hsq + wsq, data = fishData)
 summary(model)
-# Both R^2 and adjusted R^2 decreased slightly.
 
 ###################################################################################################################
 # 3. Analyze the contribution of each predictor
@@ -54,7 +50,7 @@ qt(1 - 0.05/2, n - k)
 
 # Significance of Regression
 # This should indicate that at least one of our parameters is linearly significantly related to y.
-model2 <- lm(formula = Weight_log ~ 1., data = fishData)
+model2 <- lm(formula = Weight ~ 1., data = fishData)
 anova(model2, model)
 
 alpha = 0.05
@@ -75,22 +71,7 @@ qqline(residuals(model), datax = TRUE)
 # 5. Summarize the analysis results
 ###################################################################################################################
 
+round(cor(fishData[, c(2:7)]), 3)
 
-
-# I am pretending we are sticking with the current model and will focus on using the multicollinearity topic.
-# Totally cool with throwing this model away in favor of the second order one.
-round(cor(fishData[, c(2:8)]), 3)
-
-# Length 3 (I think that is the cross measurement) is the strongest. Based on class, we could keep that and toss Length 1 & 2
-model.reduced = lm(formula = Weight_log ~ Length3 + Height + Width, data = fishData)
+model.reduced <- lm(formula = Weight ~ Length3 + Height + Width + l3sq + hsq + wsq, data = fishData)
 summary(model.reduced)
-
-n = nrow(fishData)
-k = 6
-qt(1 - 0.05/2, n - k)
-
-# None of these look much better which is probably because a linear model on non-linear relationship will never get better
-plot(x = fitted(model.reduced), y=rstandard(model.reduced), panel.last = abline(h = 0, lty = 2))
-
-qqnorm(residuals(model.reduced), main = "", datax = TRUE)
-qqline(residuals(model.reduced), datax = TRUE)
