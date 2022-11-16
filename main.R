@@ -54,7 +54,7 @@ model2 <- lm(formula = Weight ~ 1., data = fishData)
 anova(model2, model)
 
 alpha = 0.05
-qf(1 - alpha, 5, 153)
+qf(1 - alpha, 10, 148)
 
 ###################################################################################################################
 # 4. Check the model adequacy
