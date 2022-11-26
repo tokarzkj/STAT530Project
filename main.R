@@ -22,6 +22,9 @@ attach(fishData)
 pairs(fishData[2:7])
 
 
+round(cor(fishData[, c(2:7)]), 3)
+
+
 ###################################################################################################################
 # 2. Select and fit the model. Summarize model results
 ###################################################################################################################
@@ -32,7 +35,7 @@ hsq <- Height^2
 wsq <- Width^2
 
 
-model <- lm(formula = Weight ~ Length1 + Length2 + Length3 + Height + Width + l1sq + l2sq + l3sq + hsq + wsq, data = fishData)
+model <- lm(formula = Weight ~ Length3 + Height + Width + hsq + wsq, data = fishData)
 summary(model)
 
 ###################################################################################################################
@@ -54,14 +57,13 @@ model2 <- lm(formula = Weight ~ 1., data = fishData)
 anova(model2, model)
 
 alpha = 0.05
-qf(1 - alpha, 10, 148)
+qf(1 - alpha, 5, 153)
 
 ###################################################################################################################
 # 4. Check the model adequacy
 ###################################################################################################################
 
 
-# Looks like a not good model
 plot(x = fitted(model), y=rstandard(model), panel.last = abline(h = 0, lty = 2))
 
 qqnorm(residuals(model), main = "", datax = TRUE)
@@ -70,8 +72,3 @@ qqline(residuals(model), datax = TRUE)
 ###################################################################################################################
 # 5. Summarize the analysis results
 ###################################################################################################################
-
-round(cor(fishData[, c(2:7)]), 3)
-
-model.reduced <- lm(formula = Weight ~ Length3 + Height + Width + l3sq + hsq + wsq, data = fishData)
-summary(model.reduced)
