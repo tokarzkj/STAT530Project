@@ -35,7 +35,7 @@ hsq <- Height^2
 wsq <- Width^2
 
 
-model <- lm(formula = Weight ~ Length3 + Height + Width + hsq + wsq, data = fishData)
+model <- lm(formula = Weight ~ Length3 + Height + Width + l3sq + hsq + wsq, data = fishData)
 summary(model)
 
 ###################################################################################################################
