@@ -72,3 +72,10 @@ qqline(residuals(model), datax = TRUE)
 ###################################################################################################################
 # 5. Summarize the analysis results
 ###################################################################################################################
+
+model.reduced <- lm(formula = Weight ~ l3sq + wsq, data = fishData)
+summary(model.reduced)
+
+plot(x = fitted(model.reduced), y=rstandard(model.reduced), panel.last = abline(h = 0, lty = 2))
+qqnorm(residuals(model.reduced), main = "", datax = TRUE)
+qqline(residuals(model.reduced), datax = TRUE)

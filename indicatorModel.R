@@ -45,7 +45,7 @@ summary(model)
 # Use tobs to test individual contributions
 # Each tobs is listed in the summary, so we can just calculate the t alpha/2
 n = nrow(fishData)
-k = 7
+k = 13
 qt(1 - 0.05/2, n - k)
 
 # Page 88 has relevant details about T-tests in multivariable model.
