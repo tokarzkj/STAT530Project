@@ -86,3 +86,8 @@ summary(model.reduced)
 anova(model.reduced2, model.reduced)
 alpha = 0.05
 qf(1 - alpha, 1, 153)
+
+plot(x = fitted(model.reduced), y=rstandard(model.reduced), panel.last = abline(h = 0, lty = 2))
+
+qqnorm(residuals(model.reduced), main = "", datax = TRUE)
+qqline(residuals(model.reduced), datax = TRUE)
